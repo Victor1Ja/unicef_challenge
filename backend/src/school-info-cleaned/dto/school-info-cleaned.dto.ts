@@ -33,7 +33,7 @@ export class SchoolInfoCleanedDto {
 
   @IsOptional()
   @IsString()
-  internetSpeed?: string;
+  internetSpeed?: number;
 }
 
 export class EditSchoolInfoCleanedDto {
@@ -55,5 +55,5 @@ export class EditSchoolInfoCleanedDto {
 
   @IsOptional()
   @IsString()
-  internetSpeed?: string;
+  internetSpeed?: number;
 }

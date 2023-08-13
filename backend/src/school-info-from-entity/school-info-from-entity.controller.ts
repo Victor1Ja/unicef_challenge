@@ -61,4 +61,14 @@ export class SchoolInfoFromEntityController {
       schoolInfoFromEntityId,
     );
   }
+
+  @Get('forceSchoolMessage/:id')
+  forceSchoolMessage(@Param('id', ParseIntPipe) id: number) {
+    return this.schoolInfoFromEntityService.forceSchoolMessage(id);
+  }
+
+  @Get('forceQuality/:id')
+  forceQuality(@Param('id', ParseIntPipe) id: number) {
+    return this.schoolInfoFromEntityService.forceDataMessage(id);
+  }
 }

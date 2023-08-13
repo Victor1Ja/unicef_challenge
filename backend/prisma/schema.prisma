@@ -132,7 +132,7 @@ model SchoolInfoFromEntity {
   latitude      String?
   longitude     String?
   hasInternet   Boolean?
-  internetSpeed String?
+  internetSpeed Int?
 
   schoolId Int
   entityId Int
@@ -154,7 +154,7 @@ model SchoolInfoCleaned {
   longitude           String?
   geolocationAccuracy Int?
   hasInternet         Boolean?
-  internetSpeed       String?
+  internetSpeed       Int?
 
   school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 

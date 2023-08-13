@@ -2,11 +2,11 @@ import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { getCenter, getDistance } from 'geolib';
+import { EntityDataQualityDto } from 'src/entity-data-quality/dto/entity-data-quality.dto';
 import { EntityType } from 'src/entity/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { calculateConfidenceInterval, calculateMean } from 'src/utils/math';
+import { calculateConfidenceInterval } from 'src/utils/math';
 import { SchoolInfoCleanedDto } from '../school-info-cleaned/dto/school-info-cleaned.dto';
-import { EntityDataQualityDto } from 'src/entity-data-quality/dto/entity-data-quality.dto';
 @Processor('schoolInfoCleaned')
 export class SchoolInfoProcessor {
   private readonly logger = new Logger(SchoolInfoProcessor.name);
@@ -19,7 +19,7 @@ export class SchoolInfoProcessor {
   async handleDataQuality(job: Job) {
     const entityDataProvided = await this.prisma.schoolInfoFromEntity.findMany({
       where: {
-        schoolId: job.data['entityId'],
+        schoolId: job.data['id'],
       },
     });
     const dataQuality = new EntityDataQualityDto();
@@ -51,7 +51,9 @@ export class SchoolInfoProcessor {
           longitude: savedData.longitude,
         },
       );
-      if (distance < savedData.geolocationAccuracy) {
+      console.log({ distance, sved: savedData.geolocationAccuracy });
+
+      if (distance <= savedData.geolocationAccuracy) {
         rightData.location++;
       }
 
@@ -70,21 +72,54 @@ export class SchoolInfoProcessor {
       rightData.hasInternet / entityDataProvided.length;
     dataQuality.internetSpeed =
       rightData.internetSpeed / entityDataProvided.length;
-    return dataQuality;
-  }
 
+    const exist = await this.prisma.entityDataQuality.findUnique({
+      where: {
+        entityId: job.data['id'],
+      },
+    });
+
+    if (exist) {
+      const data = await this.prisma.entityDataQuality.update({
+        where: {
+          entityId: job.data['id'],
+        },
+        data: dataQuality,
+      });
+      this.logger.debug(
+        'Data Quality Updated for School: ' +
+          job.data['id'] +
+          ' ' +
+          JSON.stringify(data),
+      );
+    } else {
+      const data = await this.prisma.entityDataQuality.create({
+        data: {
+          entityId: job.data['id'],
+          ...dataQuality,
+        },
+      });
+      this.logger.debug(
+        'Data Quality Created for School: ' +
+          job.data['id'] +
+          ' ' +
+          JSON.stringify(data),
+      );
+    }
+  }
   @Process('newSchoolData')
   async handleNewSchoolData(job: Job) {
+    this.logger.debug('New School Data Job Started');
     const schoolData = await this.prisma.schoolInfoFromEntity.findMany({
       where: {
-        schoolId: job.data['schoolId'],
+        schoolId: job.data['id'],
       },
       include: {
         entity: true,
       },
     });
     const cleanedData = new SchoolInfoCleanedDto();
-    cleanedData.schoolId = job.data['schoolId'];
+    cleanedData.schoolId = job.data['id'];
     let internetFormIsp = false;
     let addressFromSchool = false;
     const geoLocations = [];
@@ -127,17 +162,19 @@ export class SchoolInfoProcessor {
       }
       // GeoLocation
       geoLocations.push({
-        latitude: data.latitude,
-        longitude: data.longitude,
+        latitude: !Number.isNaN(parseFloat(data.latitude))
+          ? parseFloat(data.latitude)
+          : data.latitude,
+        longitude: !Number.isNaN(parseFloat(data.longitude))
+          ? parseFloat(data.longitude)
+          : data.longitude,
       });
     });
 
     const center = getCenter(geoLocations);
 
-    if (!center) {
-      this.logger.error(
-        `No center found for schoolId: ${job.data['schoolId']}`,
-      );
+    if (center === false) {
+      this.logger.error(`No center found for schoolId: ${job.data['id']}`);
       return;
     }
 
@@ -157,17 +194,41 @@ export class SchoolInfoProcessor {
 
     const cleanedCenter = getCenter(cleanedDistances);
 
-    if (!cleanedCenter) {
+    if (cleanedCenter === false) {
       this.logger.error(
-        `No cleaned center found for schoolId: ${job.data['schoolId']}`,
+        `No cleaned center found for schoolId: ${job.data['id']}`,
       );
       return;
     }
 
     cleanedData.latitude = cleanedCenter.latitude.toString();
     cleanedData.longitude = cleanedCenter.longitude.toString();
-    cleanedData.geolocationAccuracy = Math.abs(
-      calculateMean(cleanedDistances) - lowerBound,
-    );
+    cleanedData.geolocationAccuracy = (upperBound - lowerBound) / 2;
+
+    const exist = await this.prisma.schoolInfoCleaned.findUnique({
+      where: { schoolId: job.data['id'] },
+    });
+    if (exist != null) {
+      const data = await this.prisma.schoolInfoCleaned.update({
+        where: {
+          schoolId: job.data['id'],
+        },
+        data: cleanedData,
+      });
+      this.logger.debug(
+        `SchoolInfoProcessor: Data updated ${job.data['id']} - ${JSON.stringify(
+          data,
+        )}`,
+      );
+    } else {
+      const data = await this.prisma.schoolInfoCleaned.create({
+        data: cleanedData,
+      });
+      this.logger.debug(
+        `SchoolInfoProcessor: Data added ${job.data['id']} - ${JSON.stringify(
+          data,
+        )}`,
+      );
+    }
   }
 }

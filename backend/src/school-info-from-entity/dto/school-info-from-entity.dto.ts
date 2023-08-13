@@ -1,7 +1,18 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class SchoolInfoFromEntityDto {
+  @IsNumber()
+  @IsNotEmpty()
   schoolId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
   entityId: number;
 
   @IsOptional()
@@ -10,15 +21,19 @@ export class SchoolInfoFromEntityDto {
 
   @IsOptional()
   @IsString()
-  geolocation?: string;
+  latitude?: string;
+
+  @IsOptional()
+  @IsString()
+  longitude?: string;
 
   @IsOptional()
   @IsBoolean()
   hasInternet?: boolean;
 
   @IsOptional()
-  @IsString()
-  internetSpeed?: string;
+  @IsNumber()
+  internetSpeed?: number;
 }
 
 export class EditSchoolInfoFromEntityDto {
@@ -39,6 +54,6 @@ export class EditSchoolInfoFromEntityDto {
   hasInternet?: boolean;
 
   @IsOptional()
-  @IsString()
-  internetSpeed?: string;
+  @IsNumber()
+  internetSpeed?: number;
 }
