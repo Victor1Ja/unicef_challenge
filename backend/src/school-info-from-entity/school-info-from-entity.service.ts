@@ -1,4 +1,6 @@
+import { InjectQueue } from '@nestjs/bull';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Queue } from 'bull';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   SchoolInfoFromEntityDto,
@@ -7,14 +9,21 @@ import {
 
 @Injectable()
 export class SchoolInfoFromEntityService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @InjectQueue('schoolInfoCleaned') private readonly schoolInfoQueue: Queue,
+  ) {}
 
   getAllSchoolInfoFromEntity() {
     return this.prisma.schoolInfoFromEntity.findMany();
   }
 
-  createSchoolInfoFromEntity(dto: SchoolInfoFromEntityDto) {
-    return this.prisma.schoolInfoFromEntity.create({ data: { ...dto } });
+  async createSchoolInfoFromEntity(dto: SchoolInfoFromEntityDto) {
+    const schoolInfo = await this.prisma.schoolInfoFromEntity.create({
+      data: { ...dto },
+    });
+    this.schoolInfoQueue.add('newSchoolData', { id: schoolInfo.schoolId });
+    return schoolInfo;
   }
 
   async getSchoolInfoFromEntityById(schoolInfoFromEntityId: number) {

@@ -28,7 +28,7 @@ export class SchoolInfoFromEntityController {
   }
 
   @Post()
-  createSchoolInfoFromEntity(@Body() dto: SchoolInfoFromEntityDto) {
+  async createSchoolInfoFromEntity(@Body() dto: SchoolInfoFromEntityDto) {
     return this.schoolInfoFromEntityService.createSchoolInfoFromEntity(dto);
   }
 

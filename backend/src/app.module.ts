@@ -13,6 +13,7 @@ import { SchoolInfoCleanedModule } from './school-info-cleaned/school-info-clean
 import { EntityDataQualityModule } from './entity-data-quality/entity-data-quality.module';
 import { ScholarLevelModule } from './scholar-level/scholar-level.module';
 import { ScholarLevelBySchoolModule } from './scholar-level-by-school/scholar-level-by-school.module';
+import { BullModule } from '@nestjs/bull';
 @Module({
   imports: [
     AuthModule,
@@ -31,6 +32,15 @@ import { ScholarLevelBySchoolModule } from './scholar-level-by-school/scholar-le
     ScholarLevelBySchoolModule,
     EntityDataQualityModule,
     ScholarLevelModule,
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'schoolInfoCleaned',
+    }),
   ],
   providers: [],
 })
