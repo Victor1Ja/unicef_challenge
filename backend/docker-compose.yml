@@ -1,5 +1,12 @@
 version: '3.8'
 services:
+  redis-queue:
+    container_name: redis_queue
+    image: redis:6.0.9-alpine
+    ports:
+      - 6379:6379
+    networks:
+      - devnetwork
   dev-db:
     container_name: dev_db_postgres13
     image: postgres:13
@@ -28,9 +35,8 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: nest
     networks:
-      - testnetwork
+      - devnetwork
 volumes:
   psql_data:
 networks:
-  testnetwork:
   devnetwork:
