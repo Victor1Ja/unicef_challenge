@@ -32,13 +32,13 @@ model Entity {
   name                 String
   description          String?
   type                 String
-  SchoolInfoFromEntity SchoolInfoFromEntity[]
-  EnityDataQuality     EnityDataQuality[]
+  schoolInfoFromEntity SchoolInfoFromEntity[]
+  entityDataQuality    EntityDataQuality[]
 
   @@map("entities")
 }
 
-model ShcolarLevel {
+model ScholarLevel {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -46,9 +46,9 @@ model ShcolarLevel {
   name        String
   description String?
 
-  SholarLevelBySchool SholarLevelBySchool[]
+  scholarLevelBySchool ScholarLevelBySchool[]
 
-  @@map("shcolar_levels")
+  @@map("scholar_levels")
 }
 
 model Country {
@@ -102,25 +102,25 @@ model School {
   cityId Int
 
   city                 City                   @relation(fields: [cityId], references: [id])
-  SholarLevelBySchool  SholarLevelBySchool[]
-  SchoolInfoFromEntity SchoolInfoFromEntity[]
-  SchoolInfoCleaned    SchoolInfoCleaned[]
+  scholarLevelBySchool ScholarLevelBySchool[]
+  schoolInfoFromEntity SchoolInfoFromEntity[]
+  schoolInfoCleaned    SchoolInfoCleaned[]
 
   @@map("schools")
 }
 
-model SholarLevelBySchool {
+model ScholarLevelBySchool {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   schoolId       Int
-  shcolarLevelId Int
+  scholarLevelId Int
 
   school       School       @relation(fields: [schoolId], references: [id])
-  shcolarLevel ShcolarLevel @relation(fields: [shcolarLevelId], references: [id])
+  scholarLevel ScholarLevel @relation(fields: [scholarLevelId], references: [id])
 
-  @@map("sholar_level_by_school")
+  @@map("scholar_level_by_school")
 }
 
 model SchoolInfoFromEntity {
@@ -137,7 +137,7 @@ model SchoolInfoFromEntity {
   entityId Int
 
   school School @relation(fields: [schoolId], references: [id])
-  enity  Entity @relation(fields: [entityId], references: [id])
+  entity Entity @relation(fields: [entityId], references: [id])
 
   @@map("school_info_from_entity")
 }
@@ -159,29 +159,18 @@ model SchoolInfoCleaned {
   @@map("school_info_cleaned")
 }
 
-model EnityDataQuality {
+model EntityDataQuality {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   entityId           Int
-  addressQuality     String?
-  geolocationQuality String?
-  hasInternetQuality String?
-  internetSpeed      String?
+  addressQuality     Int?
+  geolocationQuality Int?
+  hasInternetQuality Int?
+  internetSpeed      Int?
 
-  enity Entity @relation(fields: [entityId], references: [id])
+  entity Entity @relation(fields: [entityId], references: [id])
 
-  @@map("enity_data_quality")
+  @@map("entity_data_quality")
 }
-
-// Entity(id, name, description, type)
-// ShcolarLevels(id, nombre, description)
-// Pais(id, name)
-// Provincia(id, name)
-// Ciudad(id,name)
-// School(id, name, description,CityId)
-// SholarLevelBySchool(shcoolId, levelId, desciption)
-// SchoolInfoFromEntity(shcoolId, entityProviderID, address, geolocation, hasInternet, internetSpeed)
-// SchoolInfoCleaned(shcoolId, address, geolocationPos, geolocationAccuracy , hasInternet, internetSpeed)
-// EnityDataQuality(enityId, addressQuality, geolocationQuality, hasInternetQuality, internetSpeedQuality)
