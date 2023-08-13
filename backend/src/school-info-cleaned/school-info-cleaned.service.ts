@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { SchoolInfoCleaned } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   SchoolInfoCleanedDto,
@@ -14,7 +15,10 @@ export class SchoolInfoCleanedService {
   }
 
   createSchoolInfoCleaned(dto: SchoolInfoCleanedDto) {
-    return this.prisma.schoolInfoCleaned.create({ data: { ...dto } });
+    // ! This is a workaround for the Prisma bug
+    return this.prisma.schoolInfoCleaned.create({
+      data: { ...(dto as unknown as SchoolInfoCleaned) },
+    });
   }
 
   async getSchoolInfoCleanedById(schoolInfoCleanedId: number) {
