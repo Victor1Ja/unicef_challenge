@@ -33,7 +33,7 @@ model Entity {
   description          String?
   type                 String
   schoolInfoFromEntity SchoolInfoFromEntity[]
-  entityDataQuality    EntityDataQuality[]
+  entityDataQuality    EntityDataQuality?
 
   @@map("entities")
 }
@@ -104,7 +104,7 @@ model School {
   city                 City                   @relation(fields: [cityId], references: [id])
   scholarLevelBySchool ScholarLevelBySchool[]
   schoolInfoFromEntity SchoolInfoFromEntity[]
-  schoolInfoCleaned    SchoolInfoCleaned[]
+  schoolInfoCleaned    SchoolInfoCleaned?
 
   @@map("schools")
 }
@@ -140,15 +140,15 @@ model SchoolInfoFromEntity {
   school School @relation(fields: [schoolId], references: [id])
   entity Entity @relation(fields: [entityId], references: [id])
 
+  @@unique([schoolId, entityId])
   @@map("school_info_from_entity")
 }
 
 model SchoolInfoCleaned {
-  id        Int      @id @default(autoincrement())
+  schoolId  Int      @id @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  schoolId            Int
   address             String?
   latitude            String?
   longitude           String?
@@ -156,13 +156,13 @@ model SchoolInfoCleaned {
   hasInternet         Boolean?
   internetSpeed       String?
 
-  school School @relation(fields: [schoolId], references: [id])
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
   @@map("school_info_cleaned")
 }
 
 model EntityDataQuality {
-  entityId  Int      @id
+  entityId  Int      @id @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

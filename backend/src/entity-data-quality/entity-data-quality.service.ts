@@ -19,7 +19,7 @@ export class EntityDataQualityService {
 
   async getEntityDataQualityById(entityDataQualityId: number) {
     const entityDataQuality = await this.prisma.entityDataQuality.findUnique({
-      where: { id: entityDataQualityId },
+      where: { entityId: entityDataQualityId },
     });
     if (!entityDataQuality)
       throw new NotFoundException('EntityDataQuality not found');
@@ -31,26 +31,26 @@ export class EntityDataQualityService {
     dto: EditEntityDataQualityDto,
   ) {
     const entityDataQuality = await this.prisma.entityDataQuality.findUnique({
-      where: { id: entityDataQualityId },
+      where: { entityId: entityDataQualityId },
     });
     if (!entityDataQuality)
       throw new NotFoundException('EntityDataQuality not found');
 
     return this.prisma.entityDataQuality.update({
-      where: { id: entityDataQualityId },
+      where: { entityId: entityDataQualityId },
       data: { ...dto },
     });
   }
 
   async deleteEntityDataQualityById(entityDataQualityId: number) {
     const entityDataQuality = await this.prisma.entityDataQuality.findUnique({
-      where: { id: entityDataQualityId },
+      where: { entityId: entityDataQualityId },
     });
     if (!entityDataQuality)
       throw new NotFoundException('EntityDataQuality not found');
 
     return this.prisma.entityDataQuality.delete({
-      where: { id: entityDataQualityId },
+      where: { entityId: entityDataQualityId },
     });
   }
 }

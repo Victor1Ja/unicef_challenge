@@ -19,7 +19,7 @@ export class SchoolInfoCleanedService {
 
   async getSchoolInfoCleanedById(schoolInfoCleanedId: number) {
     const schoolInfoCleaned = await this.prisma.schoolInfoCleaned.findUnique({
-      where: { id: schoolInfoCleanedId },
+      where: { schoolId: schoolInfoCleanedId },
     });
     if (!schoolInfoCleaned)
       throw new NotFoundException('SchoolInfoCleaned not found');
@@ -31,26 +31,26 @@ export class SchoolInfoCleanedService {
     dto: EditSchoolInfoCleanedDto,
   ) {
     const schoolInfoCleaned = await this.prisma.schoolInfoCleaned.findUnique({
-      where: { id: schoolInfoCleanedId },
+      where: { schoolId: schoolInfoCleanedId },
     });
     if (!schoolInfoCleaned)
       throw new NotFoundException('SchoolInfoCleaned not found');
 
     return this.prisma.schoolInfoCleaned.update({
-      where: { id: schoolInfoCleanedId },
+      where: { schoolId: schoolInfoCleanedId },
       data: { ...dto },
     });
   }
 
   async deleteSchoolInfoCleanedById(schoolInfoCleanedId: number) {
     const schoolInfoCleaned = await this.prisma.schoolInfoCleaned.findUnique({
-      where: { id: schoolInfoCleanedId },
+      where: { schoolId: schoolInfoCleanedId },
     });
     if (!schoolInfoCleaned)
       throw new NotFoundException('SchoolInfoCleaned not found');
 
     return this.prisma.schoolInfoCleaned.delete({
-      where: { id: schoolInfoCleanedId },
+      where: { schoolId: schoolInfoCleanedId },
     });
   }
 }
