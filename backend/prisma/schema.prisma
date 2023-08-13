@@ -160,11 +160,10 @@ model SchoolInfoCleaned {
 }
 
 model EntityDataQuality {
-  id        Int      @id @default(autoincrement())
+  entityId  Int      @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  entityId           Int
   addressQuality     Int?
   geolocationQuality Int?
   hasInternetQuality Int?
