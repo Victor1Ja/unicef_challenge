@@ -9,13 +9,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  UseGuards,
 } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guard';
 import { CityService } from './city.service';
 import { CityDto, EditCityDto } from './dto/city.dto';
 
-@UseGuards(JwtGuard)
+// @UseGuards(JwtGuard)
 @Controller('cities')
 export class CityController {
   constructor(private cityService: CityService) {}

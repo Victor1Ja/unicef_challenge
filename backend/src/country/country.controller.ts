@@ -9,14 +9,12 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  UseGuards,
 } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guard';
 import { CountryService } from './country.service';
 import { CountryDto, EditCountryDto } from './dto/country.dto';
 
 @Controller('countries')
-@UseGuards(JwtGuard)
+// @UseGuards(JwtGuard)
 export class CountryController {
   constructor(private countryService: CountryService) {}
 

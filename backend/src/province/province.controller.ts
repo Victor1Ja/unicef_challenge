@@ -9,13 +9,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  UseGuards,
 } from '@nestjs/common';
+import { EditProvinceDto, ProvinceDto } from './dto/province.dto';
 import { ProvinceService } from './province.service';
-import { ProvinceDto, EditProvinceDto } from './dto/province.dto';
-import { JwtGuard } from 'src/auth/guard';
 
-@UseGuards(JwtGuard)
+// @UseGuards(JwtGuard)
 @Controller('provinces')
 export class ProvinceController {
   constructor(private provinceService: ProvinceService) {}

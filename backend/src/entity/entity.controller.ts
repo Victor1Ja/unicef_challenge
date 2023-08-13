@@ -9,13 +9,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  UseGuards,
 } from '@nestjs/common';
+import { EditEntityDto, EntityDto } from './dto/entity.dto';
 import { EntityService } from './entity.service';
-import { EntityDto, EditEntityDto } from './dto/entity.dto';
-import { JwtGuard } from 'src/auth/guard';
 
-@UseGuards(JwtGuard)
+// @UseGuards(JwtGuard)
 @Controller('entities')
 export class EntityController {
   constructor(private entityService: EntityService) {}
