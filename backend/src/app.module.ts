@@ -38,9 +38,6 @@ import { BullModule } from '@nestjs/bull';
         port: 6379,
       },
     }),
-    BullModule.registerQueue({
-      name: 'schoolInfoCleaned',
-    }),
   ],
   providers: [],
 })

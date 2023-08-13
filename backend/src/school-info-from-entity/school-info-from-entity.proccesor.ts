@@ -2,16 +2,17 @@ import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { SchoolInfoCleanedDto } from './dto/school-info-cleaned.dto';
+import { SchoolInfoCleanedDto } from '../school-info-cleaned/dto/school-info-cleaned.dto';
 import { EntityType } from 'src/entity/dto';
 import { getCenter, getDistance } from 'geolib';
 import { calculateConfidenceInterval, calculateMean } from 'src/utils/math';
+
 @Processor('schoolInfoCleaned')
-export class AudioProcessor {
-  private readonly logger = new Logger(AudioProcessor.name);
+export class SchoolInfoProcessor {
+  private readonly logger = new Logger(SchoolInfoProcessor.name);
 
   constructor(private prisma: PrismaService) {
-    this.logger.debug('AudioProcessor instantiated');
+    this.logger.debug('SchoolInfoProcessor instantiated');
   }
 
   @Process('newSchoolData')
