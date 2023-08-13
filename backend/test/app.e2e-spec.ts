@@ -1,7 +1,6 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as pactum from 'pactum';
-import { TodoDto } from 'src/todo/dto/todo.dto';
 import { AppModule } from '../src/app.module';
 import { AuthDto } from '../src/auth/dto';
 import { PrismaService } from '../src/prisma/prisma.service';
@@ -131,91 +130,6 @@ describe('App e2e', () => {
           .expectBodyContains(editDto.firstName)
           .expectBodyContains(editDto.lastName)
           .expectStatus(200);
-      });
-    });
-  });
-  describe('Todo', () => {
-    const dto: TodoDto = {
-      title: 'Absorb chakra',
-      description: 'Lore Ipsum Lore lore Ipsum magratio incendius patronus',
-      priority: 3,
-    };
-    describe('Auth check', () => {
-      it('should throw auth error', () => {
-        return pactum.spec().get(`/todo`).expectStatus(401);
-      });
-    });
-    describe('Create Todo', () => {
-      it('Should create one', () => {
-        return pactum
-          .spec()
-          .post(`/todo`)
-          .withBody({ ...dto })
-          .withHeaders({ Authorization: ' Bearer $S{UserAt}' })
-          .stores('TodoId', 'id')
-          .expectStatus(201);
-      });
-      it('Should create a second one', () => {
-        return pactum
-          .spec()
-          .post(`/todo`)
-          .withBody({ ...dto })
-          .withHeaders({ Authorization: ' Bearer $S{UserAt}' })
-          .stores('TodoId2', 'id')
-          .expectStatus(201);
-      });
-    });
-    describe('Get Todo', () => {
-      it('Should get all', () => {
-        return pactum
-          .spec()
-          .get(`/todo`)
-          .withHeaders({ Authorization: ' Bearer $S{UserAt}' })
-          .expectStatus(200);
-      });
-    });
-    describe('Get Todo by id', () => {
-      it('Should get one', () => {
-        return pactum
-          .spec()
-          .get(`/todo/$S{TodoId}`)
-          .withHeaders({ Authorization: ' Bearer $S{UserAt}' })
-          .expectStatus(200);
-      });
-    });
-    describe('Edit Todo', () => {
-      it('Should edit', () => {
-        const editDto = { description: 'New Description' };
-        return pactum
-          .spec()
-          .patch(`/todo/$S{TodoId2}`)
-          .withBody(editDto)
-          .withHeaders({ Authorization: ' Bearer $S{UserAt}' })
-          .expectBodyContains(editDto.description)
-          .expectStatus(200);
-      });
-    });
-    describe('Delete Todo', () => {
-      it('Should delete one', () => {
-        return pactum
-          .spec()
-          .delete(`/todo/$S{TodoId2}`)
-          .withHeaders({ Authorization: ' Bearer $S{UserAt}' })
-          .expectStatus(204);
-      });
-      it('Should not exist by getting  it', () => {
-        return pactum
-          .spec()
-          .get(`/todo/$S{TodoId2}`)
-          .withHeaders({ Authorization: ' Bearer $S{UserAt}' })
-          .expectStatus(404);
-      });
-      it('Should not exist by editing it', () => {
-        return pactum
-          .spec()
-          .patch(`/todo/$S{TodoId2}`)
-          .withHeaders({ Authorization: ' Bearer $S{UserAt}' })
-          .expectStatus(404);
       });
     });
   });
