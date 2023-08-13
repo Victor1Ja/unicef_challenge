@@ -9,11 +9,15 @@ export class SchoolInfoCleanedDto {
 
   @IsOptional()
   @IsString()
-  geolocationPos?: string;
+  latitude?: string;
 
   @IsOptional()
   @IsString()
-  geolocationAccuracy?: string;
+  longitude?: string;
+
+  @IsOptional()
+  @IsString()
+  geolocationAccuracy?: number;
 
   @IsOptional()
   @IsBoolean()

@@ -28,7 +28,11 @@ export class EditSchoolInfoFromEntityDto {
 
   @IsOptional()
   @IsString()
-  geolocation?: string;
+  latitude?: string;
+
+  @IsOptional()
+  @IsString()
+  longitude?: string;
 
   @IsOptional()
   @IsBoolean()

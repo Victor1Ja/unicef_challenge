@@ -129,7 +129,8 @@ model SchoolInfoFromEntity {
   updatedAt DateTime @updatedAt
 
   address       String?
-  geolocation   String?
+  latitude      String?
+  longitude     String?
   hasInternet   Boolean?
   internetSpeed String?
 
@@ -149,7 +150,8 @@ model SchoolInfoCleaned {
 
   schoolId            Int
   address             String?
-  geolocationPos      String?
+  latitude            String?
+  longitude           String?
   geolocationAccuracy String?
   hasInternet         Boolean?
   internetSpeed       String?

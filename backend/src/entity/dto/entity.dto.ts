@@ -1,4 +1,9 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+export enum EntityType {
+  SCHOOL = 'school',
+  GOVERNMENT = 'gob',
+  INTERNET_PROVIDER = 'isp',
+}
 
 export class EntityDto {
   @IsString()
@@ -9,9 +14,9 @@ export class EntityDto {
   @IsOptional()
   description?: string;
 
-  @IsString()
+  @IsEnum(EntityType)
   @IsNotEmpty()
-  type: string;
+  type: EntityType;
 }
 
 export class EditEntityDto {
