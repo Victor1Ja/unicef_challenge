@@ -6,35 +6,35 @@ export class EntityDataQualityDto {
 
   @IsOptional()
   @IsString()
-  addressQuality?: string;
+  addressQuality?: number;
 
   @IsOptional()
   @IsString()
-  geolocationQuality?: string;
+  geolocationQuality?: number;
 
   @IsOptional()
   @IsString()
-  hasInternetQuality?: string;
+  hasInternetQuality?: number;
 
   @IsOptional()
   @IsString()
-  internetSpeed?: string;
+  internetSpeed?: number;
 }
 
 export class EditEntityDataQualityDto {
   @IsOptional()
   @IsString()
-  addressQuality?: string;
+  addressQuality?: number;
 
   @IsOptional()
   @IsString()
-  geolocationQuality?: string;
+  geolocationQuality?: number;
 
   @IsOptional()
   @IsString()
-  hasInternetQuality?: string;
+  hasInternetQuality?: number;
 
   @IsOptional()
   @IsString()
-  internetSpeed?: string;
+  internetSpeed?: number;
 }
