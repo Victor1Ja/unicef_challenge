@@ -23,6 +23,7 @@ export class SchoolInfoFromEntityService {
       data: { ...dto },
     });
     this.schoolInfoQueue.add('newSchoolData', { id: schoolInfo.schoolId });
+    this.schoolInfoQueue.add('dataQuality', { id: schoolInfo.entityId });
     return schoolInfo;
   }
 

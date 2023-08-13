@@ -1,18 +1,76 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { SchoolInfoCleanedDto } from '../school-info-cleaned/dto/school-info-cleaned.dto';
-import { EntityType } from 'src/entity/dto';
 import { getCenter, getDistance } from 'geolib';
+import { EntityType } from 'src/entity/dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { calculateConfidenceInterval, calculateMean } from 'src/utils/math';
-
+import { SchoolInfoCleanedDto } from '../school-info-cleaned/dto/school-info-cleaned.dto';
+import { EntityDataQualityDto } from 'src/entity-data-quality/dto/entity-data-quality.dto';
 @Processor('schoolInfoCleaned')
 export class SchoolInfoProcessor {
   private readonly logger = new Logger(SchoolInfoProcessor.name);
 
   constructor(private prisma: PrismaService) {
     this.logger.debug('SchoolInfoProcessor instantiated');
+  }
+
+  @Process('dataQuality')
+  async handleDataQuality(job: Job) {
+    const entityDataProvided = await this.prisma.schoolInfoFromEntity.findMany({
+      where: {
+        schoolId: job.data['entityId'],
+      },
+    });
+    const dataQuality = new EntityDataQualityDto();
+    const rightData = {
+      address: 0,
+      location: 0,
+      hasInternet: 0,
+      internetSpeed: 0,
+    };
+    for (let iter = 0; iter < entityDataProvided.length; iter++) {
+      const data = entityDataProvided[iter];
+      const savedData = await this.prisma.schoolInfoCleaned.findUnique({
+        where: {
+          schoolId: data.schoolId,
+        },
+      });
+
+      if (data.address === savedData.address) {
+        rightData.address++;
+      }
+      // location
+      const distance = getDistance(
+        {
+          latitude: data.latitude,
+          longitude: data.longitude,
+        },
+        {
+          latitude: savedData.latitude,
+          longitude: savedData.longitude,
+        },
+      );
+      if (distance < savedData.geolocationAccuracy) {
+        rightData.location++;
+      }
+
+      if (data.hasInternet === savedData.hasInternet) {
+        rightData.hasInternet++;
+      }
+
+      if (data.internetSpeed === savedData.internetSpeed) {
+        rightData.internetSpeed++;
+      }
+    }
+    dataQuality.addressQuality = rightData.address / entityDataProvided.length;
+    dataQuality.geolocationQuality =
+      rightData.location / entityDataProvided.length;
+    dataQuality.hasInternetQuality =
+      rightData.hasInternet / entityDataProvided.length;
+    dataQuality.internetSpeed =
+      rightData.internetSpeed / entityDataProvided.length;
+    return dataQuality;
   }
 
   @Process('newSchoolData')

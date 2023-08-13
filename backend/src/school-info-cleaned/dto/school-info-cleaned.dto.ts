@@ -47,7 +47,7 @@ export class EditSchoolInfoCleanedDto {
 
   @IsOptional()
   @IsString()
-  geolocationAccuracy?: string;
+  geolocationAccuracy?: number;
 
   @IsOptional()
   @IsBoolean()

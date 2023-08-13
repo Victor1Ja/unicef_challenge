@@ -152,7 +152,7 @@ model SchoolInfoCleaned {
   address             String?
   latitude            String?
   longitude           String?
-  geolocationAccuracy String?
+  geolocationAccuracy Int?
   hasInternet         Boolean?
   internetSpeed       String?
 
