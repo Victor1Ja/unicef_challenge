@@ -1,3 +1,4 @@
 {
-  "conventionalCommits.scopes": ["Backend"]
+  "conventionalCommits.scopes": ["Backend"],
+  "cSpell.words": ["Giga"]
 }

@@ -43,7 +43,11 @@ export class EditSchoolInfoCleanedDto {
 
   @IsOptional()
   @IsString()
-  geolocationPos?: string;
+  latitude?: string;
+
+  @IsOptional()
+  @IsString()
+  longitude?: string;
 
   @IsOptional()
   @IsString()
