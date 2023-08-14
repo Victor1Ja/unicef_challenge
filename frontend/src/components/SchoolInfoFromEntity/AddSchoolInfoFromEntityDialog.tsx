@@ -7,18 +7,25 @@ import {
   DialogTitle,
   Button,
   TextField,
+  Checkbox,
+  Grid,
+  Typography,
 } from '@mui/material';
 import schoolInfoFromEntityApi from '../../api/SchoolInfoFromEntityApi';
+import { SchoolInfoFromEntityDto } from '../../models/SchoolInfoFromEntityDto';
 
+const integer = ['schoolId', 'entityId', 'internetSpeed'];
 export interface AddSchoolInfoDialogProps {
   open: boolean;
   onClose: () => void;
+  onAdd: () => void;
 }
 export default function AddSchoolInfoDialog({
   open,
   onClose,
+  onAdd,
 }: AddSchoolInfoDialogProps) {
-  const [schoolInfo, setSchoolInfo] = useState({
+  const [schoolInfo, setSchoolInfo] = useState<SchoolInfoFromEntityDto>({
     schoolId: 0,
     entityId: 0,
     address: '',
@@ -30,7 +37,12 @@ export default function AddSchoolInfoDialog({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const handleInputChange = event => {
-    const { name, value } = event.target;
+    // eslint-disable-next-line prefer-const
+    let { name, value } = event.target;
+    if (integer.includes(name)) {
+      value = parseInt(value);
+    }
+    console.log({ name, value });
     setSchoolInfo(prevSchoolInfo => ({
       ...prevSchoolInfo,
       [name]: value,
@@ -50,6 +62,7 @@ export default function AddSchoolInfoDialog({
     schoolInfoFromEntityApi
       .createSchoolInfoFromEntity(schoolInfo)
       .then(() => {
+        onAdd();
         onClose();
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,14 +120,18 @@ export default function AddSchoolInfoDialog({
           fullWidth
           margin="dense"
         />
-        <TextField
-          label="Has Internet"
-          name="hasInternet"
-          value={schoolInfo.hasInternet}
-          onChange={handleCheckboxChange}
-          fullWidth
-          margin="dense"
-        />
+        <Grid container alignItems="center" alignContent="center">
+          <Grid item>
+            <Typography variant="h6">Has Internet:</Typography>
+          </Grid>
+          <Grid item>
+            <Checkbox
+              name="hasInternet"
+              value={schoolInfo.hasInternet}
+              onChange={handleCheckboxChange}
+            />
+          </Grid>
+        </Grid>
         <TextField
           label="Internet Speed"
           name="internetSpeed"

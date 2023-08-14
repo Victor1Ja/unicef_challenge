@@ -5,11 +5,15 @@ import {
 import { baseUrl, instance } from './instance';
 
 const schoolInfoFromEntityApi = {
-  getAllSchoolInfoFromEntity: (): Promise<Array<SchoolInfoFromEntityDto>> =>
+  getAllSchoolInfoFromEntity: () =>
     instance.get(`${baseUrl}/school-info-from-entity`),
 
   createSchoolInfoFromEntity: (dto: SchoolInfoFromEntityDto) =>
-    instance.post(`${baseUrl}/school-info-from-entity`, dto),
+    instance.post(`${baseUrl}/school-info-from-entity`, dto, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }),
 
   getSchoolInfoFromEntityById: (id: number) =>
     instance.get(`${baseUrl}/school-info-from-entity/${id}`),

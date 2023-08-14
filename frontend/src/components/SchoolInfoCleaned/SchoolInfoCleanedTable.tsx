@@ -23,7 +23,7 @@ export default function SchoolInfoCleanedPage() {
       console.log('fetching data');
       const response = await getAllSchoolInfoCleaned();
       console.log(response);
-      setSchoolInfoList(response);
+      setSchoolInfoList(response.data);
     };
     fetchData();
   }, [getAllSchoolInfoCleaned]);

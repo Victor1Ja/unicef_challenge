@@ -51,7 +51,6 @@ export class SchoolInfoProcessor {
           longitude: savedData.longitude,
         },
       );
-      console.log({ distance, sved: savedData.geolocationAccuracy });
 
       if (distance <= savedData.geolocationAccuracy) {
         rightData.location++;
@@ -170,41 +169,46 @@ export class SchoolInfoProcessor {
           : data.longitude,
       });
     });
+    if (geoLocations.length >= 2) {
+      const center = getCenter(geoLocations);
 
-    const center = getCenter(geoLocations);
+      if (center === false) {
+        this.logger.error(`No center found for schoolId: ${job.data['id']}`);
+        return;
+      }
 
-    if (center === false) {
-      this.logger.error(`No center found for schoolId: ${job.data['id']}`);
-      return;
-    }
-
-    const distances = geoLocations.map((location) =>
-      getDistance(center, location),
-    );
-
-    const [lowerBound, upperBound] = calculateConfidenceInterval(
-      distances,
-      0.95,
-    );
-
-    const cleanedDistances = geoLocations.filter(
-      (_, index) =>
-        distances[index] >= lowerBound && distances[index] <= upperBound,
-    );
-
-    const cleanedCenter = getCenter(cleanedDistances);
-
-    if (cleanedCenter === false) {
-      this.logger.error(
-        `No cleaned center found for schoolId: ${job.data['id']}`,
+      const distances = geoLocations.map((location) =>
+        getDistance(center, location),
       );
-      return;
+
+      const [lowerBound, upperBound] = calculateConfidenceInterval(
+        distances,
+        0.95,
+      );
+
+      const cleanedDistances = geoLocations.filter(
+        (_, index) =>
+          distances[index] >= lowerBound && distances[index] <= upperBound,
+      );
+
+      const cleanedCenter = getCenter(cleanedDistances);
+
+      if (cleanedCenter === false) {
+        this.logger.error(
+          `No cleaned center found for schoolId: ${job.data['id']}`,
+        );
+        return;
+      }
+      cleanedData.latitude = cleanedCenter.latitude.toString();
+      cleanedData.longitude = cleanedCenter.longitude.toString();
+      cleanedData.geolocationAccuracy = (upperBound - lowerBound) / 2;
+    } else {
+      if (geoLocations.length == 1) {
+        cleanedData.latitude = geoLocations[0].latitude;
+        cleanedData.longitude = geoLocations[0].longitude;
+        cleanedData.geolocationAccuracy = 0;
+      }
     }
-
-    cleanedData.latitude = cleanedCenter.latitude.toString();
-    cleanedData.longitude = cleanedCenter.longitude.toString();
-    cleanedData.geolocationAccuracy = (upperBound - lowerBound) / 2;
-
     const exist = await this.prisma.schoolInfoCleaned.findUnique({
       where: { schoolId: job.data['id'] },
     });

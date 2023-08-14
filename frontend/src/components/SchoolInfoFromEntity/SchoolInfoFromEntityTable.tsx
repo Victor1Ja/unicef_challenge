@@ -1,4 +1,5 @@
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -14,6 +15,7 @@ import AddSchoolInfoDialog from './AddSchoolInfoFromEntityDialog';
 
 export default function SchoolInfoFromEntityPage() {
   const [addDialog, setAddDialog] = useState(false);
+  const [force, setForce] = useState(0);
   const [schoolInfoList, setSchoolInfoList] = useState<
     Array<SchoolInfoFromEntityDto>
   >([]);
@@ -25,10 +27,10 @@ export default function SchoolInfoFromEntityPage() {
       console.log('fetching data');
       const response = await getAllSchoolInfoFromEntity();
       console.log({ response });
-      setSchoolInfoList(response);
+      setSchoolInfoList(response.data);
     };
     fetchData();
-  }, []);
+  }, [force]);
 
   return (
     <>
@@ -60,8 +62,11 @@ export default function SchoolInfoFromEntityPage() {
             <TableRow>
               <TableCell
                 onClick={() => setAddDialog(true)}
-                sx={{ alignContent: 'center', alignItems: 'center' }}>
-                Add School Info From Entity
+                align="center"
+                sx={{ alignContent: 'center', alignItems: 'center' }}
+                variant="footer"
+                colSpan={7}>
+                <Button> Add School Info From Entity</Button>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -70,6 +75,7 @@ export default function SchoolInfoFromEntityPage() {
       <AddSchoolInfoDialog
         open={addDialog}
         onClose={() => setAddDialog(false)}
+        onAdd={() => setForce(force + 1)}
       />
     </>
   );

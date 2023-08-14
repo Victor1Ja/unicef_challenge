@@ -5,8 +5,7 @@ import {
 import { baseUrl, instance } from './instance';
 
 const schoolInfoCleanedApi = {
-  getAllSchoolInfoCleaned: (): Promise<Array<SchoolInfoCleanedDto>> =>
-    instance.get(`${baseUrl}/school-info-cleaned`),
+  getAllSchoolInfoCleaned: () => instance.get(`${baseUrl}/school-info-cleaned`),
 
   createSchoolInfoCleaned: (dto: SchoolInfoCleanedDto) =>
     instance.post(`${baseUrl}/school-info-cleaned`, dto),
