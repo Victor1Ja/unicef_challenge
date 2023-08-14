@@ -38,19 +38,6 @@ model Entity {
   @@map("entities")
 }
 
-model ScholarLevel {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  name        String
-  description String?
-
-  scholarLevelBySchool ScholarLevelBySchool[]
-
-  @@map("scholar_levels")
-}
-
 model Country {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -102,25 +89,10 @@ model School {
   cityId Int
 
   city                 City                   @relation(fields: [cityId], references: [id])
-  scholarLevelBySchool ScholarLevelBySchool[]
   schoolInfoFromEntity SchoolInfoFromEntity[]
   schoolInfoCleaned    SchoolInfoCleaned?
 
   @@map("schools")
-}
-
-model ScholarLevelBySchool {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  schoolId       Int
-  scholarLevelId Int
-
-  school       School       @relation(fields: [schoolId], references: [id])
-  scholarLevel ScholarLevel @relation(fields: [scholarLevelId], references: [id])
-
-  @@map("scholar_level_by_school")
 }
 
 model SchoolInfoFromEntity {

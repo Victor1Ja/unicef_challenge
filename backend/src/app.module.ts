@@ -11,8 +11,6 @@ import { CityModule } from './city/city.module';
 import { SchoolInfoFromEntityModule } from './school-info-from-entity/school-info-from-entity.module';
 import { SchoolInfoCleanedModule } from './school-info-cleaned/school-info-cleaned.module';
 import { EntityDataQualityModule } from './entity-data-quality/entity-data-quality.module';
-import { ScholarLevelModule } from './scholar-level/scholar-level.module';
-import { ScholarLevelBySchoolModule } from './scholar-level-by-school/scholar-level-by-school.module';
 import { BullModule } from '@nestjs/bull';
 @Module({
   imports: [
@@ -29,9 +27,7 @@ import { BullModule } from '@nestjs/bull';
     CityModule,
     SchoolInfoFromEntityModule,
     SchoolInfoCleanedModule,
-    ScholarLevelBySchoolModule,
     EntityDataQualityModule,
-    ScholarLevelModule,
     BullModule.forRoot({
       redis: {
         host: 'localhost',
