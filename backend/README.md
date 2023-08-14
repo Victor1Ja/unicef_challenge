@@ -38,6 +38,9 @@ $ npx prima migrate dev
 ## Running the app
 
 ```bash
+# Start docker containers
+$ yarn run db:dev:up
+$ yarn run queue:up
 # development
 $ yarn run start
 
@@ -48,22 +51,6 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
-## Test the APP
-Course of action:
-
-  
-## Test
-
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
 
 ## Support
 
