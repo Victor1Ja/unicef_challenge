@@ -58,3 +58,6 @@ PostgreSQL was used within a Docker container, and Redis was employed as the mes
 
 **Conclusion:**
 Efficient data quality assessment and consolidation through a structured approach involving multiple data sources, verification, and calculated geolocation accuracy.
+
+## How to Run the Project
+Follow backend and frontend instructions to run the project.
