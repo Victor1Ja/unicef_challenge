@@ -12,6 +12,7 @@ import { SchoolInfoFromEntityModule } from './school-info-from-entity/school-inf
 import { SchoolInfoCleanedModule } from './school-info-cleaned/school-info-cleaned.module';
 import { EntityDataQualityModule } from './entity-data-quality/entity-data-quality.module';
 import { BullModule } from '@nestjs/bull';
+import { AppController } from './app.controller';
 @Module({
   imports: [
     AuthModule,
@@ -36,5 +37,6 @@ import { BullModule } from '@nestjs/bull';
     }),
   ],
   providers: [],
+  controllers: [AppController],
 })
 export class AppModule {}
